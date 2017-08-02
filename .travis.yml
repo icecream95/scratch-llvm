@@ -1,0 +1,43 @@
+language: c++
+sudo: required
+dist: trusty
+matrix:
+  include:
+    - os: linux
+      compiler:
+        - clang
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty
+          packages:
+            - clang-6.0
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - DO_DEPLOY="n" # TODO: set this to "y" to enable deploys
+    - os: linux
+      compiler:
+        - clang
+      addons:
+        apt:
+          packages:
+            - clang-3.5
+      env:
+        - MATRIX_EVAL="CC=clang-3.5 && CXX=clang++-6.0"
+        - DO_DEPLOY="n"
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make -j8
+# test stuff
+# deploy stuff
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  repo: icecream95/icecream95.github.io
+  target_branch: scratch-llvm
+  on:
+    branch: master
+    condition: $DO_DEPLOY = "y"
