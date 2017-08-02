@@ -1,5 +1,5 @@
 # scratch-llvm
-[![Travis CI build status](https://api.travis-ci.org/icecream95/zxtk.svg?branch=master)](https://travis-ci.org/icecream95/zxtk) [![license](https://img.shields.io/github/license/icecream95/zxtk.svg)](https://github.com/icecream95/zxtk/blob/master/LICENSE)
+[![Travis CI build status](https://api.travis-ci.org/icecream95/scratch-llvm.svg?branch=master)](https://travis-ci.org/icecream95/scratch-llvm) [![license](https://img.shields.io/github/license/icecream95/scratch-llvm.svg)](https://github.com/icecream95/scratch-llvm/blob/master/LICENSE)
 
 
 (WIP) Scratch LLVM front and backend
