@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <limits>
 
 void usage(std::string pn)
 {
@@ -12,7 +13,7 @@ void usage(std::string pn)
     // TODO: // std::cerr << "Usage: " << pn << " SOURCE [DEST]\n\nIf DEST is missing, will output to SOURCE, replacing .ll with .json\nTo read/write using standard input, use - for SOURCE and/or DEST\n\n";
 }
 
-std::string convert(std::ifstream& ifs)
+std::string convert(std::istream& ifs)
 {
     char ch = '\0';
     while (true)
@@ -20,13 +21,18 @@ std::string convert(std::ifstream& ifs)
         ch = ifs.peek();
         if (ch == ';')
         {
-            while (ifs.get() != '\n'); // Empty body
+            ifs.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
             continue;
         }
         std::string s;
         ifs >> s;
         static const std::set<std::string> ignore
-        {"source_filename","target","attributes"};
+            {"source_filename","target","attributes"};
+        if (ignore.count(s))
+        {
+            ifs.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+            continue;
+        }
     }
     return std::string{(std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>())};
 }
