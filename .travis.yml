@@ -30,7 +30,7 @@ before_install:
 script:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DCMAKE_CXX_FLAGS='-Wall -Wextra -Wpedantic -std=c++0x'
   - make -j8
   - cd ..
   - for file in tests/cpp/*;do clang++ -c -emit-llvm -o $file.bc $file;opt -O3 $file.bc > $file.opt.bc;llvm-dis $file.opt.bc;done
