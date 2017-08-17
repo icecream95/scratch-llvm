@@ -20,10 +20,9 @@ namespace Convert {
         ifs.ignore(std::numeric_limits<std::streamsize>::max(),ch);
     }
 
-    std::string get_block(std::istream& ifs, const char open, const char close)
+    std::string get_block(std::istream& ifs, const char open, const char close, int depth = 0)
     {   // NOTE: this needs improvement for braces inside strings etc.
         std::string output;
-        int depth {0};
         bool nlooped {true};
         char ch {' '};
         while (ifs.good() && (nlooped || depth != 0))
@@ -47,24 +46,26 @@ namespace Convert {
         std::string name;
         while ((to_parse.get(ctmp), ctmp!='(') && (name += ctmp, true));
         // The function name is in name
-        to_parse.unget();
-        std::string args = get_block(to_parse,'(',')');
+        std::string args = get_block(to_parse,'(',')',1);
+        args = args.substr(0,args.size()-1);
         // The arguments the function takes is in args
         ignore_until(to_parse,'{');
-        to_parse.unget();
-        std::string body = get_block(to_parse,'{','}');
+        std::string body = get_block(to_parse,'{','}',1);
+        body = body.substr(0,body.size()-1);
         // The function body is in body
-        return "Class:\nName: " + name + "\nArguments: " + args + "\nBody: " + body + '\n';
+        return "Class:\nName: " + name + "\nArguments: " + args + "\nBody:\n" + body + '\n';
     }
 
     std::string convert(std::istream& ifs)
     {
+        ifs.exceptions(std::ios_base::eofbit);
+        // Maybe we should reset exceptions when we are done
         std::string output;
         char ch = '\0';
         try {
             while (true)
             {
-                std::cerr << '.';
+                // std::cerr << '.';
                 ch = ifs.peek();
                 if (ch == ';' || ch == '!')
                 {
@@ -97,13 +98,6 @@ int main(int argc, char* argv[])
     }
     std::ifstream ifs {argv[1]};
     std::ofstream ofs {argv[2]};
-    ifs.exceptions(std::ios_base::eofbit);
-    try {
-        ofs << Convert::convert(ifs);
-    } catch (...) {
-        //if (!ofs.failbit)
-            throw;
-    }
-    std::cout << '\n';
+    ofs << Convert::convert(ifs);
     return 0;
 }
