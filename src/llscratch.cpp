@@ -14,42 +14,77 @@ void usage(std::string pn)
 }
 
 namespace Convert {
+
+    void ignore_until(std::istream& ifs, const char ch)
+    {   // This is just a helper function to cut down on repeated code
+        ifs.ignore(std::numeric_limits<std::streamsize>::max(),ch);
+    }
+
+    std::string get_block(std::istream& ifs, const char open, const char close)
+    {   // NOTE: this needs improvement for braces inside strings etc.
+        std::string output;
+        int depth {0};
+        bool nlooped {true};
+        char ch {' '};
+        while (ifs.good() && (nlooped || depth != 0))
+        {
+            nlooped = false;
+            while ((ch = ifs.get(), output += ch, ch!=open) && ch!=close); // I'm pretty sure there's a cleaner way to do this
+            if (ch == open) ++depth;
+            else            --depth;
+        }
+        return output;
+    }
+
     std::string funct_define(std::istream& ifs)
     {
-        return "";
+        std::stringstream to_parse {get_block(ifs,'{','}')};
+        to_parse.exceptions(std::ios_base::eofbit);
+        std::string output;
+        std::string tmp;
+        char ctmp;
+        while (to_parse.get()!='@'); // Empty body
+        std::string name;
+        while ((to_parse.get(ctmp), ctmp!='(') && (name += ctmp, true));
+        // The function name is in name
+        to_parse.unget();
+        std::string args = get_block(to_parse,'(',')');
+        // The arguments the function takes is in args
+        ignore_until(to_parse,'{');
+        to_parse.unget();
+        std::string body = get_block(to_parse,'{','}');
+        // The function body is in body
+        return "Class:\nName: " + name + "\nArguments: " + args + "\nBody: " + body + '\n';
     }
 
     std::string convert(std::istream& ifs)
     {
-        static const std::string start_boilerplate
-            {""}; // TODO
-        std::string output {start_boilerplate};
+        std::string output;
         char ch = '\0';
-        while (true)
-        {
-            ch = ifs.peek();
-            if (ch == ';' || ch == '!')
+        try {
+            while (true)
             {
-                ifs.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-                continue;
+                std::cerr << '.';
+                ch = ifs.peek();
+                if (ch == ';' || ch == '!')
+                {
+                    ignore_until(ifs,'\n');
+                    continue;
+                }
+                std::string s;
+                ifs >> s;
+                static const std::set<std::string> ignore
+                    {"source_filename","target","attributes"};
+                if (ignore.count(s))
+                {
+                    ignore_until(ifs,'\n');
+                    continue;
+                }
+                if (s == "define")
+                    output += funct_define(ifs);
             }
-            std::string s;
-            ifs >> s;
-             static const std::set<std::string> ignore
-                {"source_filename","target","attributes"};
-            if (ignore.count(s))
-            {
-                ifs.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-                continue;
-            }
-            if (s == "define")
-                output += funct_define(ifs);
-        }
-        static const std::string end_boilerplate
-            {""}; // TODO
-        output += end_boilerplate;
+        } catch (std::ios_base::failure&) {} // Empty body
         return output;
-        // return std::string{(std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>())};
     }
 }
 
@@ -62,5 +97,13 @@ int main(int argc, char* argv[])
     }
     std::ifstream ifs {argv[1]};
     std::ofstream ofs {argv[2]};
-    ofs << Convert::convert(ifs);
+    ifs.exceptions(std::ios_base::eofbit);
+    try {
+        ofs << Convert::convert(ifs);
+    } catch (...) {
+        //if (!ofs.failbit)
+            throw;
+    }
+    std::cout << '\n';
+    return 0;
 }
