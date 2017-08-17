@@ -15,6 +15,13 @@ void usage(std::string pn)
 
 namespace Convert {
 
+    std::string parse_code(std::istream& ifs)
+    {
+        std::stringstream s;
+        s << ifs.rdbuf();
+        return s.str();
+    }
+
     void ignore_until(std::istream& ifs, const char ch)
     {   // This is just a helper function to cut down on repeated code
         ifs.ignore(std::numeric_limits<std::streamsize>::max(),ch);
@@ -53,7 +60,11 @@ namespace Convert {
         std::string body = get_block(to_parse,'{','}',1);
         body = body.substr(0,body.size()-1);
         // The function body is in body
-        return "Class:\nName: " + name + "\nArguments: " + args + "\nBody:\n" + body + '\n';
+
+        std::stringstream body_s {body};
+        ignore_until(body_s,':');
+
+        return "Class:\nName: " + name + "\nArguments: " + args + "\nBody: " + parse_code(body_s) + '\n';
     }
 
     std::string convert(std::istream& ifs)
