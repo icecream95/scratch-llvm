@@ -61,6 +61,9 @@ namespace Convert {
         std::string output;
         std::string tmp;
         char ctmp;
+
+        std::string return_t;
+        to_parse >> return_t; // Is this right?
         while (to_parse.get()!='@'); // Empty body
         std::string name;
         while ((to_parse.get(ctmp), ctmp!='(') && (name += ctmp, true));
@@ -70,8 +73,10 @@ namespace Convert {
         // The arguments the function takes is in args
 
         // Argument parser
-        int argc = 0;
+        int argc = 1; // return var
         std::vector<std::pair<std::string,std::pair<std::string,std::string>>> arguments;
+        arguments.push_back(make_pair("!return",
+            make_pair(return_t,""))); // What about void functions?
         std::string tmpdesc;
         std::string tmptype;
         bool type_yet {false};
