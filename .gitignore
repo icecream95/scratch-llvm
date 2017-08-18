@@ -3,3 +3,6 @@ ignore
 
 *.pch
 *.gch
+
+*.ll
+*.bc
