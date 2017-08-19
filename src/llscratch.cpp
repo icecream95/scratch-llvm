@@ -8,14 +8,15 @@
 #include <utility>
 #include <functional>
 
-using namespace std;
-
-struct Syntax_table_function :std::function<string(istream&,map<string,Syntax_table_function>&)> {/* Empty body */}; // A CRTP (https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
+struct Syntax_table_function :public std::function<std::string(std::istream&,std::map<std::string,Syntax_table_function>&)> {/* Empty body */};
+// A CRTP (https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
 // Should map be hardcoded in?
 
-using Syntax_map = map<string,Syntax_table_function>;
+using Syntax_map = std::map<std::string,Syntax_table_function>;
 
 int main(int argc, char* argv[])
 {
-    Syntax_map syntax_table;
+    Syntax_map syntax_table {
+        {"identifiying string",Syntax_table_function{[](std::istream&,Syntax_map&){return std::string{"lambda expression"};}}}
+    };
 }
