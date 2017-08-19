@@ -7,3 +7,6 @@
 ~~NOTE: I started this before looking at the size of the llvm documentation, and I'm busy working on other stuff, so it might be a while until anything appears here~~
 
 I'm back to working on this! More stuff will appear soon...
+
+Currently, there seems to be a problem with clang (or with GCC) where clang doesn't carry through members of std::function to my derived class, so it might be a while fixing this.
+I could switch to GCC, but this is an llvm backend, so anything from the "other camp" is going to be a last resort.
