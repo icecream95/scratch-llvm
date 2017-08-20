@@ -21,11 +21,42 @@ matrix:
         - clang
       addons:
         apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty
           packages:
-            - clang-3.5
+            - clang-3.6
       env:
-        - MATRIX_EVAL="CC=clang-3.5 && CXX=clang++-3.5"
+        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
         - DO_DEPLOY="n"
+    - os: linux
+      compiler:
+        - clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty
+          packages:
+            - clang-3.7
+      env:
+        - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-3.7"
+        - DO_DEPLOY="n"
+    - os: linux
+      compiler:
+        - clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty
+          packages:
+            - clang-3.8
+      env:
+        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+        - DO_DEPLOY="n"
+
+
 before_install:
   - eval $MATRIX_EVAL
 script:
