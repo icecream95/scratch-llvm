@@ -25,9 +25,9 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty
           packages:
-            - clang-3.6
+            - clang-3.9
       env:
-        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
+        - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.9"
         - DO_DEPLOY="n"
     - os: linux
       compiler:
@@ -38,9 +38,9 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty
           packages:
-            - clang-3.7
+            - clang-4.0
       env:
-        - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-3.7"
+        - MATRIX_EVAL="CC=clang-3.7 && CXX=clang++-4.0"
         - DO_DEPLOY="n"
     - os: linux
       compiler:
@@ -51,9 +51,9 @@ matrix:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty
           packages:
-            - clang-3.8
+            - clang-5.0
       env:
-        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-5.0"
         - DO_DEPLOY="n"
 
 
