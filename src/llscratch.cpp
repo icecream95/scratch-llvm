@@ -14,8 +14,8 @@ struct Syntax_map :std::map<std::string, std::function<std::string(std::istream&
 
 using Syntax_function = std::function<std::string(std::istream&, Syntax_map&)>;
 
-template <typename If, typename Is, typename T, typename Tr = std::char_traits<T>>
-struct Basic_multi_istream {
+template <typename If, typename Is, typename C, typename Tr = std::char_traits<C>>
+struct Basic_multi_istream :std::basic_istream<C,Tr> {
 };
 
 template <typename If, typename Is>

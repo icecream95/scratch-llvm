@@ -16,22 +16,12 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
         - DO_DEPLOY="n" # TODO: set this to "y" to enable deploys
-    - os: linux
-      compiler:
-        - clang
-      addons:
-        apt:
-          packages:
-            - clang-3.5
-      env:
-        - MATRIX_EVAL="CC=clang-3.5 && CXX=clang++-3.5"
-        - DO_DEPLOY="n"
 before_install:
   - eval $MATRIX_EVAL
 script:
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_CXX_FLAGS='-Wall -Wextra -Wpedantic -std=c++0x'
+  - cmake .. -DCMAKE_CXX_FLAGS='-Wall -Wextra -Wpedantic -std=c++1z'
   - make -j8
   - cd ..
   - for file in tests/cpp/*;do clang++ -c -emit-llvm -o $file.bc $file;opt -O3 $file.bc > $file.opt.bc;llvm-dis $file.opt.bc;done
