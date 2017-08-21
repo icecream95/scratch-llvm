@@ -7,9 +7,12 @@ set (SLLVM_VERSION_MINOR 0)
 set (SLLVM_VERSION_UPDATE 0)
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/src/include/scratch-llvm.hpp.in"
-  "${PROJECT_BINARY_DIR}/src/include/scratch-llvm.hpp"
+  "${PROJECT_SOURCE_DIR}/src/include/scratch-llvm/scratch-llvm.hpp.in"
+  "${PROJECT_BINARY_DIR}/src/include/scratch-llvm/scratch-llvm.hpp"
   )
+
+include_directories("${PROJECT_BINARY_DIR}/src/include")
+include_directories("${PROJECT_SOURCE_DIR}/src/include")
 
 add_executable(llscratch src/llscratch.cpp)
 
