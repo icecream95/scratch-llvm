@@ -10,16 +10,27 @@
 
 #include <scratch-llvm/multi_istream.hpp>
 
-struct Syntax_map :std::map<std::string, std::function<std::string(std::istream&, Syntax_map&)>> {};
+inline void ignore_until(std::istream& ifs, const char ch)
+{
+    ifs.ignore(std::numeric_limits<std::streamsize>::max(),ch);
+}
+
+struct Syntax_map :std::map<std::string,
+    std::function<std::string(std::istream&, Syntax_map&)>> {};
 // A CRTP (https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
 // Should map be hardcoded in?
 
-using Syntax_function = std::function<std::string(std::istream&, Syntax_map&)>;
+using Syntax_function = std::function<
+    std::string(std::istream&, Syntax_map&)>;
 
 int main(int argc, char* argv[])
 {
     Syntax_map syntax_table {{
-        {"identifiying string",[](std::istream&,Syntax_map&) -> std::string {return "lambda expression";}}
+        {"identifiying string",[](std::istream&, Syntax_map&)
+                -> std::string
+            {return "lambda expression";}},
+        {";",[](std::istream& is, Syntax_map&) -> std::string
+            {ignore_until(is,'\n');return "";}}
     }};
     return 0;
 }
