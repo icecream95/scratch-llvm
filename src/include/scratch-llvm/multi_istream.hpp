@@ -1,3 +1,5 @@
+#include <istream>
+#include <string>
 
 template <typename C, typename Tr = std::char_traits<C>>
 class Basic_multi_streambuf :public std::basic_streambuf<C,Tr> {
