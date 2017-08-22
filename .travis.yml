@@ -10,19 +10,6 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty
-          packages:
-            - clang-6.0
-      env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
-        - DO_DEPLOY="n" # TODO: set this to "y" to enable deploys
-    - os: linux
-      compiler:
-        - clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-4.0
           packages:
             - clang-4.0
@@ -42,8 +29,19 @@ matrix:
       env:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
         - DO_DEPLOY="n"
-
-
+    - os: linux
+      compiler:
+        - clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty
+          packages:
+            - clang-6.0
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - DO_DEPLOY="n" # TODO: set this to "y" to enable deploys
 before_install:
   - eval $MATRIX_EVAL
 script:
