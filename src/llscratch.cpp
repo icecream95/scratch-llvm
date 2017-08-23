@@ -26,7 +26,7 @@ struct Syntax_map :std::map<std::string,
 using Syntax_function = std::function<
     std::string(std::istream&, Syntax_map&)>;
 
-int main(int argc, char* argv[])
+int main()
 {
     // Syntax for syntax table identifying string:
     // Special characters are preceded by "\\".

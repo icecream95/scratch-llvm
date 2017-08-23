@@ -13,11 +13,13 @@ public: // Thanks to https://stackoverflow.com/a/14086442
                 is1->read(buffer,1023);
                 size = is1->gcount();
                 buffer[size] = '\0';
-            } else if (!is2->eof()) {
+            }
+            else if (!is2->eof()) {
                 is2->read(buffer,1023);
                 size = is2->gcount();
                 buffer[size] = '\0';
-            } else size = 0;
+            }
+            else size = 0;
             this->setg(this->buffer, this->buffer, this->buffer + size);
         }
         return (this->gptr() == this->egptr())
