@@ -8,15 +8,17 @@ template <typename C, typename Tr = std::char_traits<C>,
           typename A = std::allocator<C>>
 class Basic_parse_string {
 public:
-    Basic_parse_string(const std::basic_string<C,Tr,A>& str)
+    using string_type = std::basic_string<C,Tr,A>;
+
+    Basic_parse_string(const string_type& str)
     {
         std::basic_stringstream<C,Tr> stream{str};
-        std::basic_string<C,Tr,A> tmp;
+        string_type tmp;
         while ((stream >> tmp,blk.push_back(std::make_pair(((tmp[0]=='\\')?true:false),tmp)),stream.good())); // Empty body
     }
-    std::basic_string<C,Tr,A> str() const
+    string_type str() const
     {
-        std::basic_string<C,Tr,A> tmp;
+        string_type tmp;
         for (auto x: blk)
             tmp += x.second + ' ';
         return tmp;
@@ -51,7 +53,15 @@ public:
             }
             if (blk[i1].first == rhs.blk[i2].first)
                 return false;
-            
+            if (blk[i1].first)
+                return parse_equal(blk[i1].second, rhs.blk, i2);
+            else
+                return parse_equal(rhs.blk[i2].second, blk, i1);
+            string_type& sp = (blk[i1].first)?
+                blk[i1].second:rhs.blk[i2].second;
+            int& count = (blk[i1].first)?i1:i2;
+            std::vector<std::pair<bool,string_type>>& vec =
+                (blk[i1].first)?blk:rhs.blk;
         }
     }
     bool operator<(const Basic_parse_string<C,Tr,A>& rhs) const
@@ -65,7 +75,14 @@ public:
         return (blk.size()<rhs.blk.size() || blk<rhs.blk)?true:false;
     }
 private:
-    std::vector<std::pair<bool,std::basic_string<C,Tr,A>>> blk;
+    bool parse_equal(string_type& sp,
+                     std::vector<std::pair<bool,string_type>>& vec,
+                     int& count)
+    {
+        // The problem with this is that we need to take a regex
+        //     style approach.
+    }
+    std::vector<std::pair<bool,string_type>> blk;
 };
 
 using Parse_string = Basic_parse_string<char>;
