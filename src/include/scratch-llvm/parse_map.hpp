@@ -1,4 +1,6 @@
-/* Version 1: I am redoing this, and this remains here for reference
+/* Version 1:
+~~I am redoing this, and this remains here for reference~~
+This file will be deleted soon
 
 #include <map>
 #include <string>
