@@ -9,6 +9,22 @@ public: // Thanks to https://stackoverflow.com/a/14086442
     Basic_multi_streambuf(std::basic_istream<C,Tr>& isc1,
                           std::basic_istream<C,Tr>& isc2)
         :is1{&isc1}, is2{&isc2} {}
+    Basic_multi_streambuf(std::basic_istream<C,Tr>* isc1,
+                          std::basic_istream<C,Tr>& isc2)
+        :is1{&isc1}, is2{&isc2}, del1{true} {}
+    Basic_multi_streambuf(std::basic_istream<C,Tr>& isc1,
+                          std::basic_istream<C,Tr>* isc2)
+        :is1{&isc1}, is2{&isc2}, del2{true} {}
+    Basic_multi_streambuf(std::basic_istream<C,Tr>* isc1,
+                          std::basic_istream<C,Tr>* isc2)
+        :is1{&isc1}, is2{&isc2}, del1{true}, del2{true} {}
+    ~Basic_multi_streambuf()
+    {
+        if (del1)
+            delete is1;
+        if (del2)
+            delete is2;
+    }
     typename Tr::int_type underflow() {
         if (this->gptr() == this->egptr()) {
             int size {0};
@@ -37,14 +53,23 @@ private:
 
     std::basic_istream<C,Tr>* is1;
     std::basic_istream<C,Tr>* is2;
-    // TODO: create a version with support for objects created on the
-    //       free store
+    bool del1 {false};
+    bool del2 {false};
 };
 
 template<typename C, typename Tr = std::char_traits<C>>
 struct Basic_multi_istream_base {
     Basic_multi_istream_base(std::basic_istream<C,Tr>& i1,
                              std::basic_istream<C,Tr>& i2)
+        :multi_istream_base_impl_buf{i1,i2} {}
+    Basic_multi_istream_base(std::basic_istream<C,Tr>* i1,
+                             std::basic_istream<C,Tr>& i2)
+        :multi_istream_base_impl_buf{i1,i2} {}
+    Basic_multi_istream_base(std::basic_istream<C,Tr>& i1,
+                             std::basic_istream<C,Tr>* i2)
+        :multi_istream_base_impl_buf{i1,i2} {}
+    Basic_multi_istream_base(std::basic_istream<C,Tr>* i1,
+                             std::basic_istream<C,Tr>* i2)
         :multi_istream_base_impl_buf{i1,i2} {}
     Basic_multi_streambuf<C,Tr> multi_istream_base_impl_buf;
 };
@@ -56,6 +81,21 @@ class Basic_multi_istream
 public:
     Basic_multi_istream(std::basic_istream<C,Tr>& i1,
                         std::basic_istream<C,Tr>& i2)
+        : Basic_multi_istream_base<C,Tr> {i1,i2}
+        , std::basic_istream<C,Tr>
+              {&this->multi_istream_base_impl_buf} {}
+    Basic_multi_istream(std::basic_istream<C,Tr>* i1,
+                        std::basic_istream<C,Tr>& i2)
+        : Basic_multi_istream_base<C,Tr> {i1,i2}
+        , std::basic_istream<C,Tr>
+              {&this->multi_istream_base_impl_buf} {}
+    Basic_multi_istream(std::basic_istream<C,Tr>& i1,
+                        std::basic_istream<C,Tr>* i2)
+        : Basic_multi_istream_base<C,Tr> {i1,i2}
+        , std::basic_istream<C,Tr>
+              {&this->multi_istream_base_impl_buf} {}
+    Basic_multi_istream(std::basic_istream<C,Tr>* i1,
+                        std::basic_istream<C,Tr>* i2)
         : Basic_multi_istream_base<C,Tr> {i1,i2}
         , std::basic_istream<C,Tr>
               {&this->multi_istream_base_impl_buf} {}
