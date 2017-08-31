@@ -2,7 +2,7 @@
 #include <string>
 #include <array>
 
-template <typename C, typename Tr = std::char_traits<C>>
+template<typename C, typename Tr = std::char_traits<C>>
 class Basic_multi_streambuf :public std::basic_streambuf<C,Tr> {
 public: // Thanks to https://stackoverflow.com/a/14086442
     Basic_multi_streambuf(std::basic_istream<C,Tr>& isc1,
@@ -40,7 +40,7 @@ private:
     //       free store
 };
 
-template <typename C, typename Tr = std::char_traits<C>>
+template<typename C, typename Tr = std::char_traits<C>>
 struct Basic_multi_istream_base {
     Basic_multi_istream_base(std::basic_istream<C,Tr>& i1,
                              std::basic_istream<C,Tr>& i2)
@@ -48,7 +48,7 @@ struct Basic_multi_istream_base {
     Basic_multi_streambuf<C,Tr> multi_istream_base_impl_buf;
 };
 
-template <typename C, typename Tr = std::char_traits<C>>
+templat<typename C, typename Tr = std::char_traits<C>>
 class Basic_multi_istream
     : virtual Basic_multi_istream_base<C,Tr>
     , public std::basic_istream<C,Tr> {
@@ -88,4 +88,3 @@ inline std::basic_istream<C,Tr>& collapse(Basic_multi_istream<C,Tr>& i)
         return i.first();
     return i;
 }
-
