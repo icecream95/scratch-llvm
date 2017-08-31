@@ -1,6 +1,7 @@
 #include <istream>
 #include <string>
 #include <array>
+#include <sstream>
 
 template<typename C, typename Tr = std::char_traits<C>>
 class Basic_multi_streambuf :public std::basic_streambuf<C,Tr> {
@@ -48,7 +49,7 @@ struct Basic_multi_istream_base {
     Basic_multi_streambuf<C,Tr> multi_istream_base_impl_buf;
 };
 
-templat<typename C, typename Tr = std::char_traits<C>>
+template<typename C, typename Tr = std::char_traits<C>>
 class Basic_multi_istream
     : virtual Basic_multi_istream_base<C,Tr>
     , public std::basic_istream<C,Tr> {
@@ -88,3 +89,8 @@ inline std::basic_istream<C,Tr>& collapse(Basic_multi_istream<C,Tr>& i)
         return i.first();
     return i;
 }
+
+template<typename C, typename Tr = std::char_traits<C>>
+class Basic_shared_streambuf :public std::basic_streambuf<C,Tr> {
+public:
+};
