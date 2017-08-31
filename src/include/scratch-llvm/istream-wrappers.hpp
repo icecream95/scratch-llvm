@@ -11,13 +11,13 @@ public: // Thanks to https://stackoverflow.com/a/14086442
         :is1{&isc1}, is2{&isc2} {}
     Basic_multi_streambuf(std::basic_istream<C,Tr>* isc1,
                           std::basic_istream<C,Tr>& isc2)
-        :is1{&isc1}, is2{&isc2}, del1{true} {}
+        :is1{isc1}, is2{&isc2}, del1{true} {}
     Basic_multi_streambuf(std::basic_istream<C,Tr>& isc1,
                           std::basic_istream<C,Tr>* isc2)
-        :is1{&isc1}, is2{&isc2}, del2{true} {}
+        :is1{&isc1}, is2{isc2}, del2{true} {}
     Basic_multi_streambuf(std::basic_istream<C,Tr>* isc1,
                           std::basic_istream<C,Tr>* isc2)
-        :is1{&isc1}, is2{&isc2}, del1{true}, del2{true} {}
+        :is1{isc1}, is2{isc2}, del1{true}, del2{true} {}
     ~Basic_multi_streambuf()
     {
         if (del1)
@@ -25,7 +25,8 @@ public: // Thanks to https://stackoverflow.com/a/14086442
         if (del2)
             delete is2;
     }
-    typename Tr::int_type underflow() {
+    typename Tr::int_type underflow()
+    {
         if (this->gptr() == this->egptr()) {
             int size {0};
             if (!is1->eof()) {
@@ -129,8 +130,3 @@ inline std::basic_istream<C,Tr>& collapse(Basic_multi_istream<C,Tr>& i)
         return i.first();
     return i;
 }
-
-template<typename C, typename Tr = std::char_traits<C>>
-class Basic_shared_streambuf :public std::basic_streambuf<C,Tr> {
-public:
-};
