@@ -8,7 +8,7 @@
 #include <utility>
 #include <functional>
 
-#include <scratch-llvm/multi_istream.hpp>
+#include <scratch-llvm/istream-wrappers.hpp>
 
 inline void ignore_until(std::istream& is, const char ch)
 {
@@ -17,6 +17,33 @@ inline void ignore_until(std::istream& is, const char ch)
 
 int compile(std::istream& is, std::ostream& os)
 {
+    bool eof_except {!(is.exceptions()&std::ios_base::eofbit)};
+    is.exceptions(is.exceptions()|std::ios_base::eofbit);
+    char ch = '\0';
+    try {
+        while (true) {
+            ch = is.get();
+            if (ch == ';' || ch == '!')
+            {
+                ignore_until(is,'\n');
+                continue;
+            }
+            std::string s;
+            is >> s;
+            static const std::set<std::string> ignore
+                {"source_filename","target","attributes"};
+            if (ignore.count(s))
+            {
+                ignore_until(is,'\n');
+                continue;
+           }
+            if (s == "define")
+                os << ""; // funct_define(is);
+        }
+    } catch (std::ios_base::failure&) {} // Empty body
+    is.clear();
+    is.exceptions(is.exceptions() ^ eof_except?std::ios_base::goodbit
+                                              :std::ios_base::eofbit);
     return 0;
 }
 
